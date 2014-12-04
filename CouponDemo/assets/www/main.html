@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>
+        </title>
+        <link rel="stylesheet" href="styles/jquery.mobile-1.1.0.min.css" />
+        <link rel="stylesheet" href="styles/iDeal.css" />
+        <style>
+            /* App custom styles */
+        </style>
+        <script src="js/jquery.js">
+        </script>
+        <script src="js/cordova-1.6.1.js">
+        </script>
+        <script src="js/jquery.mobile-1.1.0.js">
+        </script>
+        <script src="js/services/CouponServices.js">
+        </script>
+    </head>
+    <body onload="onBodyLoad()">
+        <div data-role="page" id="mainPage">
+            <div data-role="content">
+                <div data-role="fieldcontain">
+                    <select name="couponMenu" id="couponMenu" onchange="onCouponChange()">                        
+                    </select>
+                </div>
+                <div align="center" style="margin: 10px">
+                    <img src="" id="couponImage" alt="image" width="225" height="225" style="display: none" />
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <input id="textinput2" placeholder="EMAIL" value="" type="email" />
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <input id="textinput3" placeholder="PHONE" value="" type="text" />
+                    </fieldset>
+                </div>
+                <div align="center">
+                	<input type="button" data-inline="true" id="btnSend" value="SEND" />
+                </div>
+                <br/>
+                <div  align="center" class="fieldLabel">
+                    <b>
+                        Spam & Rice
+                    </b>
+                </div>
+            </div>
+        </div>
+        <script>
+        	
+        	function onBodyLoad(){
+        		$("#mainPage :input").attr("disabled", true);
+        		$.mobile.showPageLoadingMsg("b","Getting information ...",true);
+        		
+        		document.addEventListener("deviceready",onDeviceReady,false);
+        	}
+        	
+        	function onCouponChange(){
+        		var imageUrl = $("#couponMenu").val();
+        		$("#couponImage").attr("src",imageUrl);
+        		$("#couponImage").css("display","block");
+        	}
+        	
+        	function onDeviceReady(){
+        		try{
+        			var packageUID = window.sessionStorage.getItem("packageUID");
+            		window.plugins.couponServices.getCouponByPackageUID(packageUID, onGetSuccess, onGetError);
+        		} catch(error){
+        			$.mobile.hidePageLoadingMsg();
+        			alert(error);
+        			$("#mainPage :input").attr("disabled", false);
+        		}
+        	}
+        	
+        	function onGetSuccess(response){
+    			try{
+    				var couponInfo = $.parseJSON(response);
+    				if(couponInfo.couponname.length > 0){
+    					for(var i = 0; i < couponInfo.couponname.length; i++){
+    						var optionStart = "<option value='"+couponInfo.couponimageurl[i]+"'>";
+    						var optionContent = ""+couponInfo.couponname[i]+" - "+couponInfo.discountamount[i]+" Off";
+    						var optionEnd = "</option";
+        					$("#couponMenu").append(optionStart + optionContent + optionEnd);
+        				}
+    					$("#couponMenu").selectedIndex = 0;
+    					$("#couponMenu").selectmenu("refresh");
+    					onCouponChange();
+    				} else{
+    					alert('Coupon not found');
+    				}
+    			} catch(error){
+    				alert(error);
+    			}
+    			$.mobile.hidePageLoadingMsg();
+    			$("#mainPage :input").attr("disabled", false);
+    		}
+    		
+    		function onGetError(error){
+    			$.mobile.hidePageLoadingMsg();
+    			$("#mainPage :input").attr("disabled", false);
+    			alert(error);
+    		}
+        </script>
+    </body>
+</html>

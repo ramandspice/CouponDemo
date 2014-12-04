@@ -1,0 +1,22 @@
+a[data-role="button"]{
+	background: #C0C0C0;
+	color: #0000FF;
+}
+
+select{
+	background: #C0C0C0;
+}
+
+select option{
+	background: #C0C0C0;
+}
+
+.fieldLabel{
+	color: #0000FF;
+}
+
+div[data-role="fieldcontain"]{
+	border: none;
+	/* Override default padding of jquery mobile */
+	padding: 1px;
+}
