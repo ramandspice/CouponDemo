@@ -8,7 +8,7 @@ public class CouponDemoActivity extends DroidGap {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);//test//test
+        super.onCreate(savedInstanceState);//test//test//test
         loadUrl("file:///android_asset/www/login.html");
     }
 }
